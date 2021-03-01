@@ -10,9 +10,13 @@ namespace MediaLibrary
         private static NLog.Logger logger = NLogBuilder.ConfigureNLog(Directory.GetCurrentDirectory() + "\\nlog.config").GetCurrentClassLogger();
         static void Main(string[] args)
         {
-            string movieFilePath = Directory.GetCurrentDirectory() + "\\movies.scrubbed.csv";
 
             logger.Info("Program started");
+
+            string scrubbedFile = FileScrubber.ScrubMovies("movies.csv");
+            logger.Info(scrubbedFile);
+
+            string movieFilePath = Directory.GetCurrentDirectory() + "\\movies.scrubbed.csv";
 
             MovieFile movieFile = new MovieFile(movieFilePath);
 
@@ -57,6 +61,19 @@ namespace MediaLibrary
                         {
                             movie.genres.Add("(no genres listed)");
                         }
+                        //ask for director
+                        Console.WriteLine("Enter Movie Director: ");
+                        //input director
+                        movie.director = Console.ReadLine();
+                        //ask for running time
+                        Console.WriteLine("How many hours: ");
+                        int userHours =  Int32.Parse(Console.ReadLine());
+                        Console.WriteLine("How many minutes: ");
+                        int userMinutes = Int32.Parse(Console.ReadLine());
+                        Console.WriteLine("How many seconds: ");
+                        int userSeconds = Int32.Parse(Console.ReadLine());
+                        //input running time
+                        movie.runningTime = new TimeSpan(userHours, userMinutes, userSeconds);
                         // add movie
                         movieFile.AddMovie(movie);
                     }
@@ -103,8 +120,7 @@ namespace MediaLibrary
             //  };
             //  Console.WriteLine(book.Display());
 
-            string scrubbedFile = FileScrubber.ScrubMovies("movies.csv");
-            logger.Info(scrubbedFile);
+            
 
 
             logger.Info("Program ended");
