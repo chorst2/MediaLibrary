@@ -21,11 +21,11 @@ namespace MediaLibrary
             Movies = new List<Movie>();
 
             // to populate the list with data, read from the data file
+            StreamReader sr = new StreamReader(filePath);
             try
             {
-                StreamReader sr = new StreamReader(filePath);
                 // first line contains column headers
-                sr.ReadLine();
+                //sr.ReadLine();
                 while (!sr.EndOfStream)
                 {
                     // create instance of Movie class
@@ -53,7 +53,7 @@ namespace MediaLibrary
                         // remove movieId and first quote from string
                         line = line.Substring(idx + 1);
                         // find the next quote
-                        idx = line.IndexOf('"');
+                        idx = line.LastIndexOf('"');
                         // extract the movieTitle
                         movie.title = line.Substring(0, idx);
                         // remove title and last comma from the string
@@ -65,24 +65,24 @@ namespace MediaLibrary
                         movie.genres = genreLine.Split('|').ToList();
                         //remove genres
                         line = line.Substring(idx + 1);
+                        idx = line.IndexOf(',');
                         //movie director
                         movie.director = line.Substring(0, idx);
                         //remove director
                         line = line.Substring(idx + 1);
                         //movie running time
                         movie.runningTime = TimeSpan.Parse(line.Substring(0));
-
                     }
                     Movies.Add(movie);
                 }
-                // close file when done
-                sr.Close();
                 logger.Info("Movies in file {Count}", Movies.Count);
             }
             catch (Exception ex)
             {
                 logger.Error(ex.Message);
             }
+            // close file when done
+            sr.Close();
         }
 
         // public method

@@ -12,13 +12,10 @@ namespace MediaLibrary
         {
 
             logger.Info("Program started");
-
             string scrubbedFile = FileScrubber.ScrubMovies("movies.csv");
-            logger.Info(scrubbedFile);
+            logger.Info(scrubbedFile);   
 
-            string movieFilePath = Directory.GetCurrentDirectory() + "\\movies.scrubbed.csv";
-
-            MovieFile movieFile = new MovieFile(movieFilePath);
+            MovieFile movieFile = new MovieFile(scrubbedFile);
 
             string choice = "";
             do
@@ -120,7 +117,7 @@ namespace MediaLibrary
             //  };
             //  Console.WriteLine(book.Display());
 
-            
+             
 
 
             logger.Info("Program ended");
