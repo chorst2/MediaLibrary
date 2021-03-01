@@ -10,7 +10,8 @@ namespace MediaLibrary
         private static NLog.Logger logger = NLogBuilder.ConfigureNLog(Directory.GetCurrentDirectory() + "\\nlog.config").GetCurrentClassLogger();
         static void Main(string[] args)
         {
-            
+            string movieFilePath = Directory.GetCurrentDirectory() + "\\movies.scrubbed.csv";
+
             logger.Info("Program started");
 
             // Movie movie = new Movie
