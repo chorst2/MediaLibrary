@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using NLog.Web;
 
-namespace MovieLibraryWithClasses
+namespace MediaLibrary
 {
     public class MovieFile
     {
@@ -39,15 +39,17 @@ namespace MovieLibraryWithClasses
                         // no quote = no comma in movie title
                         // movie details are separated with comma(,)
                         string[] movieDetails = line.Split(',');
-                        movie.movieId = UInt64.Parse(movieDetails[0]);
+                        movie.mediaId = UInt64.Parse(movieDetails[0]);
                         movie.title = movieDetails[1];
                         movie.genres = movieDetails[2].Split('|').ToList();
+                        movie.director = movieDetails[3];
+                        movie.runningTime = TimeSpan.Parse(movieDetails[4]);
                     }
                     else
                     {
                         // quote = comma in movie title
                         // extract the movieId
-                        movie.movieId = UInt64.Parse(line.Substring(0, idx - 1));
+                        movie.mediaId = UInt64.Parse(line.Substring(0, idx - 1));
                         // remove movieId and first quote from string
                         line = line.Substring(idx + 1);
                         // find the next quote
@@ -56,8 +58,20 @@ namespace MovieLibraryWithClasses
                         movie.title = line.Substring(0, idx);
                         // remove title and last comma from the string
                         line = line.Substring(idx + 2);
+                        //find next comma
+                        idx = line.IndexOf(',');
                         // replace the "|" with ", "
-                        movie.genres = line.Split('|').ToList();
+                        string genreLine = line.Substring(0, idx);
+                        movie.genres = genreLine.Split('|').ToList();
+                        //remove genres
+                        line = line.Substring(idx + 1);
+                        //movie director
+                        movie.director = line.Substring(0, idx);
+                        //remove director
+                        line = line.Substring(idx + 1);
+                        //movie running time
+                        movie.runningTime = TimeSpan.Parse(line.Substring(0));
+
                     }
                     Movies.Add(movie);
                 }
@@ -87,14 +101,14 @@ namespace MovieLibraryWithClasses
             try
             {
                 // first generate movie id
-                movie.movieId = Movies.Max(m => m.movieId) + 1;
+                movie.mediaId = Movies.Max(m => m.mediaId) + 1;
                 StreamWriter sw = new StreamWriter(filePath, true);
-                sw.WriteLine($"{movie.movieId},{movie.title},{string.Join("|", movie.genres)}");
+                sw.WriteLine($"{movie.mediaId},{movie.title},{string.Join("|", movie.genres)}");
                 sw.Close();
                 // add movie details to Lists
                 Movies.Add(movie);
                 // log transaction
-                logger.Info("Movie id {Id} added", movie.movieId);
+                logger.Info("Movie id {Id} added", movie.mediaId);
             } 
             catch(Exception ex)
             {
